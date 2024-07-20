@@ -29,9 +29,21 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "https://prathameshsable.me/",
+    "https://prathameshsable.me/*",
+    "http://prathameshsable.me/*",
+    "http://prathameshsable.me/",
+]
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "https://prathameshsable.me/",
+    "https://prathameshsable.me/*",
+    "http://prathameshsable.me/",    
+    "http://prathameshsable.me/*",    
+]
 
 # Application definition
 
