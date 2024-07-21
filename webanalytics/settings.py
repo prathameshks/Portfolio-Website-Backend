@@ -33,8 +33,10 @@ DEBUG = env('DEBUG').lower() == 'true'
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    'prathameshsable.me',
-    'prathameshks.github.io',
+    'https://prathameshsable.me',
+    'http://prathameshsable.me',
+    'https://prathameshks.github.io',
+    'http://prathameshks.github.io',
 ]
 
 # Application definition
