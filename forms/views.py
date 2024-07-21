@@ -54,8 +54,19 @@ class ContactView(APIView):
                 reply_to=['prathameshks2003@gmail.com'],
             )
             msg.attach_alternative(html_content, "text/html")
+            
+            # admin mail
+            msg2 = EmailMultiAlternatives(
+                "Received a new feedback!",
+                "Details of new feedback: \n\nName: " + instance.name + "\nEmail: " + instance.email + "\nMessage: " + instance.message,
+                from_email='prathameshks2003@gmail.com',
+                to=['prathameshks2003@gmail.com'],
+                reply_to=['prathameshks2003@gmail.com'],
+            )
+            
             try:
                 msg.send()
+                msg2.send()
             except Exception as e:
                 print("mail not sent")
                 print(e)
@@ -110,8 +121,19 @@ class TestimonialView(APIView):
                 reply_to=['prathameshks2003@gmail.com'],
             )
             msg.attach_alternative(html_content, "text/html")
+            
+            # admin mail
+            msg2 = EmailMultiAlternatives(
+                "Received a new Testimonial!",
+                "Details of new Testimonial: \n\nName: " + instance.name + "\nEmail: " + instance.email + "\nMessage: " + email_message + "\nRating: " + str(instance.rating),
+                from_email='prathameshks2003@gmail.com',
+                to=['prathameshks2003@gmail.com'],
+                reply_to=['prathameshks2003@gmail.com'],
+            )
+            
             try:
                 msg.send()
+                msg2.send()
             except Exception as e:
                 print("mail not sent")
                 print(e)            
