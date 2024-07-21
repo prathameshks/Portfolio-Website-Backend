@@ -29,21 +29,10 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG').lower() == 'true'
 
-ALLOWED_HOSTS = [
-    "https://prathameshsable.me/",
-    "https://prathameshsable.me/*",
-    "http://prathameshsable.me/*",
-    "http://prathameshsable.me/",
-]
 
+ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
-
-CORS_ALLOWED_ORIGINS = [
-    "https://prathameshsable.me/",
-    "https://prathameshsable.me/*",
-    "http://prathameshsable.me/",    
-    "http://prathameshsable.me/*",    
-]
+CORS_ALLOWED_ORIGINS = ['*']
 
 # Application definition
 
@@ -60,7 +49,8 @@ INSTALLED_APPS = [
     'corsheaders',
 
     # Local apps
-    'api'
+    'api',
+    'forms',
 ]
 
 MIDDLEWARE = [
@@ -154,7 +144,34 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'
+
+# set media root
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
+
+# Template directory
+TEMPLATE_DIR = BASE_DIR / 'templates'
+
+# static directory
+STATIC_DIR = BASE_DIR / 'static'
+
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
