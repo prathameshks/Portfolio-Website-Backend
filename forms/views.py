@@ -36,7 +36,7 @@ class ContactView(APIView):
             params = {
                 'name': instance.name,
                 'email': instance.email,
-                'message': "Thank You for your efforts to fill valuable feedback and help us to improve. We will get back to you soon.",
+                'message': f"Thank You for your efforts to fill valuable feedback about '{instance.subject}' and help us to improve. We will get back to you soon.",
                 'linkedin_link': 'https://www.linkedin.com/in/prathamesh-sable/',
                 'facebook_link': 'https://www.facebook.com/prathamesh.sable.2003/',
                 'twitter_link': 'https://twitter.com/pratham_sable/',
@@ -49,7 +49,7 @@ class ContactView(APIView):
             msg = EmailMultiAlternatives(
                 subject,
                 text_content,
-                from_email='prathameshks2003@gmail.com',
+                from_email='prathameshsable623@gmail.com',
                 to=[instance.email],
                 reply_to=['prathameshks2003@gmail.com'],
             )
@@ -57,9 +57,9 @@ class ContactView(APIView):
             
             # admin mail
             msg2 = EmailMultiAlternatives(
-                "Received a new feedback!",
-                "Details of new feedback: \n\nName: " + instance.name + "\nEmail: " + instance.email + "\nMessage: " + instance.message,
-                from_email='prathameshks2003@gmail.com',
+                "New Feedback - " + str(instance.subject),
+                "Details of new feedback: \n\nName: " + instance.name + "\nEmail: " + instance.email + "\nSubject: " + instance.subject + "\nMessage: " + instance.message,
+                from_email='prathameshsable623@gmail.com',
                 to=['prathameshks2003@gmail.com'],
                 reply_to=['prathameshks2003@gmail.com'],
             )
@@ -116,7 +116,7 @@ class TestimonialView(APIView):
             msg = EmailMultiAlternatives(
                 subject,
                 text_content,
-                from_email='prathameshks2003@gmail.com',
+                from_email='prathameshsable623@gmail.com',
                 to=[instance.email],
                 reply_to=['prathameshks2003@gmail.com'],
             )
@@ -126,7 +126,7 @@ class TestimonialView(APIView):
             msg2 = EmailMultiAlternatives(
                 "Received a new Testimonial!",
                 "Details of new Testimonial: \n\nName: " + instance.name + "\nEmail: " + instance.email + "\nMessage: " + instance.message + "\nRating: " + str(instance.rating),
-                from_email='prathameshks2003@gmail.com',
+                from_email='prathameshsable623@gmail.com',
                 to=['prathameshks2003@gmail.com'],
                 reply_to=['prathameshks2003@gmail.com'],
             )
