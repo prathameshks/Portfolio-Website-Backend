@@ -20,10 +20,15 @@ from django.utils.decorators import method_decorator
 from forms.serializers import ContactSerializer,TestimonialSerializer
 # from api.serializers import VisitorSerializer
 
+# logging
+import logging
+
+logger = logging.getLogger('webanalytics')
 
 @method_decorator(ratelimit(key='ip', rate='1/m', method='POST'), name='post')
 class ContactView(APIView):
     def get(self, request):
+        logger.warning("Got a GET request for Contact Form, Which is not expected.")
         return Response("Invalid Request.",status= status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
@@ -70,20 +75,25 @@ class ContactView(APIView):
             try:
                 msg.send()
                 msg2.send()
+                logger.info(f"Contact Form Email sent successfully to {instance.email}.")
             except Exception as e:
+                logger.error(f"Contact Form Error sending email to {instance.email}: {e}")
                 print("mail not sent")
                 print(e)
             resp['success'] = True
             resp['ok'] = True
+            logger.info(f"Contact Form submitted successfully by {instance.email}.")
             return Response(resp, status = status.HTTP_200_OK)
         else:
             # print(serializer.errors)
+            logger.warning(f"Contact Form submission failed (Invalid Serializer): {serializer.errors}.")
             return Response(resp,status=status.HTTP_400_BAD_REQUEST)
         
 
 @method_decorator(ratelimit(key='ip', rate='1/m', method='POST'), name='post')
 class TestimonialView(APIView):
     def get(self, request):
+        logger.warning("Got a GET request for Testimonial Form, Which is not expected.")
         return Response("Invalid Request.",status= status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
@@ -139,12 +149,15 @@ class TestimonialView(APIView):
             try:
                 msg.send()
                 msg2.send()
+                logger.info(f"Testimonial Form Email sent successfully to {instance.email}.")
             except Exception as e:
-                print("mail not sent")
-                print(e)            
+                logger.error(f"Testimonial Form Error sending email to {instance.email}: {e}")
+                print("mail not sent")   
             
             resp = {'success' : True,'ok':True}
+            logger.info(f"Testimonial Form submitted successfully by {instance.email}.")
             return Response(resp, status = status.HTTP_200_OK)
         else:
             # print(serializer.errors)
+            logger.warning(f"Testimonial Form submission failed (Invalid Serializer): {serializer.errors}.")
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

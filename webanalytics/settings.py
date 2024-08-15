@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import environ
 from os.path import join
+import os
+from django.utils.log import DEFAULT_LOGGING
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -68,6 +70,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    # Created middlewares
+    'webanalytics.middleware.RequestLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'webanalytics.urls'
@@ -182,3 +187,84 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+def ensure_dir(file_path):
+    directory = os.path.dirname(file_path)
+    if not os.path.exists(directory):
+        os.makedirs(directory, exist_ok=True)
+
+# Define log file paths
+access_log = os.path.join(BASE_DIR, 'logs', 'access.log')
+info_log = os.path.join(BASE_DIR, 'logs', 'info.log')
+error_log = os.path.join(BASE_DIR, 'logs', 'error.log')
+
+# Ensure log directories exist
+for log_file in [access_log, info_log, error_log]:
+    ensure_dir(log_file)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'file_access': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': access_log,
+            'formatter': 'simple',
+        },
+        'file_info': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': info_log,
+            'formatter': 'verbose',
+        },
+        'file_error': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': error_log,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file_info', 'file_error'],
+            'level': 'INFO',
+        },
+        'django.server': {
+            'handlers': ['file_access'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'webanalytics': {
+            'handlers': ['console', 'file_info', 'file_error'],
+            'level': 'DEBUG',
+        },
+    }
+}
+
+# Merge with default Django logging
+LOGGING = {**DEFAULT_LOGGING, **LOGGING}
