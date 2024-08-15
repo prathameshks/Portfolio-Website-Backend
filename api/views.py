@@ -5,7 +5,7 @@ from rest_framework import status
 import webanalytics.settings as settings
 from requests import get as ReqGet
 from api.models import Visitor
-from api.serializers import VisitorSerializer
+# from api.serializers import VisitorSerializer
 
 
 # Create your views here.

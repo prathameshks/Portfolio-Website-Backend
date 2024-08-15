@@ -1,24 +1,27 @@
-from datetime import datetime
+# from datetime import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-import webanalytics.settings as settings
-from requests import get as ReqGet
-from django.core.mail import send_mail
+# import webanalytics.settings as settings
+# from requests import get as ReqGet
+# from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
+# from django.template.loader import get_template
 from django.utils.html import strip_tags
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.utils import timezone
+# from django.contrib.auth.decorators import login_required
+# from django.shortcuts import render, redirect
+# from django.utils import timezone
+from django_ratelimit.decorators import ratelimit
+from django.utils.decorators import method_decorator
 
-from forms.models import Contact,Testimonial
-from api.models import Visitor
+# from forms.models import Contact,Testimonial
+# from api.models import Visitor
 from forms.serializers import ContactSerializer,TestimonialSerializer
-from api.serializers import VisitorSerializer
+# from api.serializers import VisitorSerializer
 
-# Create your views here.
+
+@method_decorator(ratelimit(key='ip', rate='1/m', method='POST'), name='post')
 class ContactView(APIView):
     def get(self, request):
         return Response("Invalid Request.",status= status.HTTP_400_BAD_REQUEST)
@@ -77,6 +80,8 @@ class ContactView(APIView):
             # print(serializer.errors)
             return Response(resp,status=status.HTTP_400_BAD_REQUEST)
         
+
+@method_decorator(ratelimit(key='ip', rate='1/m', method='POST'), name='post')
 class TestimonialView(APIView):
     def get(self, request):
         return Response("Invalid Request.",status= status.HTTP_400_BAD_REQUEST)
