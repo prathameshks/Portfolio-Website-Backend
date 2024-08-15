@@ -23,6 +23,9 @@ from forms.serializers import ContactSerializer,TestimonialSerializer
 # logging
 import logging
 
+# recaptcha
+from webanalytics.recaptcha import verify_recaptcha
+
 logger = logging.getLogger('webanalytics')
 
 @method_decorator(ratelimit(key='ip', rate='1/m', method='POST'), name='post')
@@ -32,7 +35,24 @@ class ContactView(APIView):
         return Response("Invalid Request.",status= status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
-        resp = {'success' : False,'ok':False}
+        resp = {'success' : False,'ok':False,'message':'Failed To Submit The Form.'}
+        
+        recaptcha_token = request.data.get('g-recaptcha-response')
+        # print(f"{recaptcha_token = }")
+        # print(request.data)
+        
+        if not recaptcha_token:
+            resp['message'] = "Please verify CAPTCHA before submitting."
+            logger.warning("Contact Form submission failed (No CAPTCHA).")
+            return Response(resp,status=status.HTTP_400_BAD_REQUEST)
+            
+        
+        is_valid_recaptcha = verify_recaptcha(recaptcha_token)
+        
+        if not is_valid_recaptcha:
+            resp['message'] = "Failed To verify CAPTCHA."
+            logger.warning("Contact Form submission failed (Invalid CAPTCHA).")
+            return Response(resp,status=status.HTTP_400_BAD_REQUEST)
         
         # get id of visitor object to store contact
         # visitor_id = request.session['visitor_id']
@@ -75,14 +95,15 @@ class ContactView(APIView):
             try:
                 msg.send()
                 msg2.send()
-                logger.info(f"Contact Form Email sent successfully to {instance.email}.")
+                # logger.info(f"Contact Form Email sent successfully to {instance.email}.")
             except Exception as e:
                 logger.error(f"Contact Form Error sending email to {instance.email}: {e}")
                 print("mail not sent")
                 print(e)
             resp['success'] = True
             resp['ok'] = True
-            logger.info(f"Contact Form submitted successfully by {instance.email}.")
+            resp['message'] = "Form Submitted Successfully."
+            # logger.info(f"Contact Form submitted successfully by {instance.email}.")
             return Response(resp, status = status.HTTP_200_OK)
         else:
             # print(serializer.errors)
@@ -96,7 +117,26 @@ class TestimonialView(APIView):
         logger.warning("Got a GET request for Testimonial Form, Which is not expected.")
         return Response("Invalid Request.",status= status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request):
+    def post(self, request):        
+        resp = {'success' : False,'ok':False,'message':'Invalid Request.'}
+        
+        recaptcha_token = request.data.get('g-recaptcha-response')
+        # print(f"{recaptcha_token = }")
+        # print(request.data)
+        
+        if not recaptcha_token:
+            resp['message'] = "Please verify CAPTCHA before submitting."
+            logger.warning("Contact Form submission failed (No CAPTCHA).")
+            return Response(resp,status=status.HTTP_400_BAD_REQUEST)
+            
+        
+        is_valid_recaptcha = verify_recaptcha(recaptcha_token)
+        
+        if not is_valid_recaptcha:
+            resp['message'] = "Failed To verify CAPTCHA."
+            logger.warning("Contact Form submission failed (Invalid CAPTCHA).")
+            return Response(resp,status=status.HTTP_400_BAD_REQUEST)
+        
         serializer = TestimonialSerializer(data=request.data)
         if serializer.is_valid():
             instance = serializer.save()
@@ -149,13 +189,15 @@ class TestimonialView(APIView):
             try:
                 msg.send()
                 msg2.send()
-                logger.info(f"Testimonial Form Email sent successfully to {instance.email}.")
+                # logger.info(f"Testimonial Form Email sent successfully to {instance.email}.")
             except Exception as e:
                 logger.error(f"Testimonial Form Error sending email to {instance.email}: {e}")
                 print("mail not sent")   
             
-            resp = {'success' : True,'ok':True}
-            logger.info(f"Testimonial Form submitted successfully by {instance.email}.")
+            resp['success'] = True
+            resp['ok'] = True
+            resp['message'] = "Thank you for your valuable feedback!"
+            # logger.info(f"Testimonial Form submitted successfully by {instance.email}.")
             return Response(resp, status = status.HTTP_200_OK)
         else:
             # print(serializer.errors)

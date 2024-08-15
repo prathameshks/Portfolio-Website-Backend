@@ -188,6 +188,11 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# reCAPTCHA Keys
+
+RECAPTCHA_SITE_KEY = env('RECAPTCHA_SITE_KEY')
+RECAPTCHA_SECRET_KEY = env('RECAPTCHA_SECRET_KEY')
+
 def ensure_dir(file_path):
     directory = os.path.dirname(file_path)
     if not os.path.exists(directory):
