@@ -19,7 +19,7 @@ class defaultView(APIView):
         
         resp['time'] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         resp['ip_address'] = ip_add
-        resp['ip_info'] = ReqGet(f"https://geolocation-db.com/json/{ip_add}&position=true",timeout=5).json()
+        resp['ip_info'] = ReqGet(f"http://ip-api.com/json/{ip_add}?fields=status,message,continent,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,mobile,proxy,query",timeout=5).json()
         resp['screen_resolution'] = request.data.get("screen_resolution")
         resp['referrer'] = request.data.get("referrer")
         resp['timezone'] = request.data.get("timezone")
