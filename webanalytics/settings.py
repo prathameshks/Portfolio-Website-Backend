@@ -114,12 +114,16 @@ if DEBUG:
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
+            'ENGINE': 'mssql',
             'NAME': env('DB_NAME'),
             'USER': env('DB_USER'),
             'PASSWORD': env('DB_PASSWORD'),
             'HOST': env('DB_HOST'),
-            'PORT': env('DB_PORT'),
+            'PORT': env('DB_PORT', default='1433'),
+            'OPTIONS': {
+                'driver': 'ODBC Driver 18 for SQL Server',
+                'extra_params': 'Encrypt=yes;TrustServerCertificate=no;',
+            },
         }
     }
 
