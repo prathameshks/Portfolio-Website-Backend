@@ -33,13 +33,18 @@ DEBUG = env('DEBUG').lower() == 'true'
 
 
 ALLOWED_HOSTS = ['*']
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
-    'https://prathameshsable.me',
-    'http://prathameshsable.me',
-    'https://prathameshks.github.io',
-    'http://prathameshks.github.io',
+    'https://prathameshsable.in',
+    'https://www.prathameshsable.in',
+    'https://nice-sea-0672efa00.2.azurestaticapps.net',
 ]
+
+if DEBUG:
+    CORS_ALLOWED_ORIGINS += [
+        'http://localhost:5173',
+        'http://localhost:5174',
+    ]
 
 # Application definition
 
