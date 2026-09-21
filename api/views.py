@@ -9,6 +9,11 @@ from api.models import Visitor
 
 
 # Create your views here.
+class healthView(APIView):
+    def get(self, request):
+        return Response({'status': 'ok'}, status=status.HTTP_200_OK)
+
+
 class defaultView(APIView):
     def get(self, request):
         return self.post(request)
